@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Rephrase from './rephrase';
 import axios from "axios";
 
-
-
 const Container = (props) => {
     const [text, setText] = useState('');
     const [searchWord, setSearchWord] = useState("");
@@ -13,38 +11,36 @@ const Container = (props) => {
     const handleOnChange = (event) => {
         setText(event.target.value);
     };
-    
-    //handle toUppercase
+
+    // Handle toUpperCase
     const handleUpClick = () => {
-        let newText = text.toUpperCase();
+        const newText = text.toUpperCase();
         setText(newText);
         props.showAlert("Converted to uppercase", "success");
     };
 
-    //handle toLowercase
+    // Handle toLowerCase
     const handleLoClick = () => {
-        let newText = text.toLowerCase();
+        const newText = text.toLowerCase();
         setText(newText);
         props.showAlert("Converted to lowercase", "success");
     };
-   
-    //handle clearText
+
+    // Handle clearText
     const handleClear = () => {
         setText('');
         props.showAlert("Cleared text", "success");
     };
-    
-    //handle Copy
+
+    // Handle Copy
     const handleCopy = () => {
-        var copyText = document.getElementById("mybox");
-        copyText.select();
-        navigator.clipboard.writeText(copyText.value);
+        navigator.clipboard.writeText(text);
         props.showAlert("Successfully copied", "success");
     };
 
-    //handle WhiteSpaces
+    // Handle white spaces
     const handleWhiteSpaces = () => {
-        let result = text.replace(/\s{1,}/g, ' ').trim();
+        const result = text.replace(/\s{1,}/g, ' ').trim();
         setText(result);
         props.showAlert("Whitespace removed", "success");
     };
@@ -54,13 +50,11 @@ const Container = (props) => {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
 
-    //handle replaceword
+    // Handle replace word
     const handleReplace = () => {
         if (searchWord.trim() !== "") {
             const escapedSearchWord = escapeRegExp(searchWord);
             const regex = new RegExp(escapedSearchWord, "gi");
-            
-            // Check if the search word is found in the text
             if (regex.test(text)) {
                 const updatedParagraph = text.replace(regex, replaceWord);
                 setText(updatedParagraph);
@@ -68,40 +62,38 @@ const Container = (props) => {
             } else {
                 props.showAlert("Search word not found", "warning");
             }
-    
-            // Clear the input fields
             setSearchWord(""); 
             setReplaceWord("");
         }
     };
-    
-    //reverse the string
-    const handleReverse = () => {
-        let strRev = text.split('').reverse().join('');
-        setText(strRev);
-        props.showAlert("Text reverse", "success");
-    }
 
-    //converted to titileCase
+    // Reverse the string
+    const handleReverse = () => {
+        const strRev = text.split('').reverse().join('');
+        setText(strRev);
+        props.showAlert("Text reversed", "success");
+    };
+
+    // Convert to title case
     const titleCase = () => {
-        let lower = text.toLowerCase().split(' ');
-        let str = lower.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+        const lower = text.toLowerCase().split(' ');
+        const str = lower.map(word => word.charAt(0).toUpperCase() + word.slice(1));
         setText(str.join(' '));
-        props.showAlert("Converted to titleCase", "success");
-    }
+        props.showAlert("Converted to title case", "success");
+    };
 
     // Grammar check and correction function
     const run = async (text) => {
         if (text.trim() === "") {
-            props.showAlert("Please enter a word to check grammer", "warning");
+            props.showAlert("Please enter text to check grammar", "warning");
             return;
-        };
+        }
         setLoading(true);
         try {
             const response = await axios.post(
                 'https://api.sapling.ai/api/v1/edits',
                 {
-                    "key": '38Z4P9EL8QP2H3XIW212T15O6K1RI51T',
+                    "key":'38Z4P9EL8QP2H3XIW212T15O6K1RI51T', // Use environment variable
                     "session_id": 'test session',
                     text,
                 },
@@ -114,7 +106,6 @@ const Container = (props) => {
                     const { start, end, replacement } = edit;
                     updatedText = updatedText.substring(0, start) + replacement + updatedText.substring(end);
                 });
-
                 setText(updatedText);
                 props.showAlert("Text corrected based on suggestions", "success");
             } else {
@@ -122,12 +113,12 @@ const Container = (props) => {
             }
         } catch (err) {
             console.error(err);
-            const msg = err.response ? err.response.data.msg : "Error occurred";
-            props.showAlert("sorry", "danger");
+            const msg = err.response ? err.response.data.msg : "An error occurred during the API request";
+            props.showAlert(msg, "danger");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <>
@@ -154,14 +145,13 @@ const Container = (props) => {
                 <button disabled={text.length === 0} type="button" className="btn btn-primary mx-1 my-1" onClick={handleReverse}>Reverse</button>
                 <button type="button" className="btn btn-primary mx-1 my-1" onClick={() => run(text)} disabled={loading}>{loading ? 'Correcting...' : 'Grammar Check'}</button>
             </div>
-            <Rephrase text={text} showAlert={props.showAlert} mode={props.mode}/>
-            <div className=" my-1" style={{ color: props.mode === 'dark' ? 'white' : '#041743' }}>
-                <h5>{text.split(" ").filter((element) => { return element.length !== 0 }).length} words and {text.length} characters</h5>
+            <Rephrase text={text} showAlert={props.showAlert} mode={props.mode} />
+            <div className="my-1" style={{ color: props.mode === 'dark' ? 'white' : '#041743' }}>
+                <h5>{text.split(" ").filter((element) => element.length !== 0).length} words and {text.length} characters</h5>
                 <h5>{text.match(/[^a-zA-Z0-9\s]/g) ? text.match(/[^a-zA-Z0-9\s]/g).length : 0} special characters</h5>
                 <h4>Preview</h4>
                 <p>{text ? text : "Nothing to preview!!"}</p>
             </div>
-
         </>
     );
 };

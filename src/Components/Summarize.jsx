@@ -8,13 +8,13 @@ const Summarize = ({ showAlert, mode }) => {
     const handleChange = (e) => {
         setText(e.target.value);
     }
-    //to cler the text in textarea
+
     const handleClear = () => {
         setText('');
+        setSummary(''); // Clear the summary when clearing the text
         showAlert("Cleared text", "success");
     };
 
-//function to fetch api data
     const summarizeText = async () => {
         if (text.trim()) {
             setLoading(true);
@@ -22,7 +22,7 @@ const Summarize = ({ showAlert, mode }) => {
                 const response = await fetch('https://article-extractor-and-summarizer.p.rapidapi.com/summarize-text', {
                     method: "POST",
                     headers: {
-                        'x-rapidapi-key': 'ffa499c7f2msh48e6d7626a22787p150626jsn810415ccb194',
+                        'x-rapidapi-key':'ffa499c7f2msh48e6d7626a22787p150626jsn810415ccb194', // Use environment variable for API key
                         'x-rapidapi-host': 'article-extractor-and-summarizer.p.rapidapi.com',
                         'Content-Type': 'application/json'
                     },
@@ -50,15 +50,32 @@ const Summarize = ({ showAlert, mode }) => {
         <>
             <div>
                 <h3 className='my-4' style={{ color: mode === 'dark' ? 'white' : '#041743' }}>Summarize Your Text here 📜</h3>
-                <textarea className="form-control" id="textInput" value={text} rows="10" cols="50" placeholder='Enter your text here' onChange={handleChange} style={{ backgroundColor: mode === 'dark' ? 'grey' : 'white', color: mode === 'dark' ? 'white' : '#041743', border: '0.1px solid black' }}></textarea>
-                <button type="button" className="btn btn-primary my-1" onClick={summarizeText}>Summarize Text</button>
-                <button disabled={text.length === 0} type="button" className="btn btn-primary mx-1 my-1" onClick={handleClear}>Clear Text</button>
-
+                <textarea 
+                    className="form-control" 
+                    id="textInput" 
+                    value={text} 
+                    rows="10" 
+                    cols="50" 
+                    placeholder='Enter your text here' 
+                    onChange={handleChange} 
+                    style={{ backgroundColor: mode === 'dark' ? 'grey' : 'white', color: mode === 'dark' ? 'white' : '#041743', border: '0.1px solid black' }}
+                />
+                <button type="button" className="btn btn-primary my-1" onClick={summarizeText} disabled={loading}>
+                    {loading ? 'Summarizing...' : 'Summarize Text'}
+                </button>
+                <button 
+                    disabled={text.length === 0} 
+                    type="button" 
+                    className="btn btn-primary mx-1 my-1" 
+                    onClick={handleClear}
+                >
+                    Clear Text
+                </button>
             </div>
             <div style={{ color: mode === 'dark' ? 'white' : '#041743' }}>
-                <h5>{text.split(" ").filter((element) => { return element.length !== 0 }).length} words and {text.length} characters</h5>
+                <h5>{text.split(" ").filter((element) => element.length !== 0).length} words and {text.length} characters</h5>
                 <h4>Summary:</h4>
-                <p>{text ? summary : "No summary!!"}</p> {/*condition rendering */}
+                <p>{text ? summary : "No summary!"}</p>
             </div>
         </>
     );

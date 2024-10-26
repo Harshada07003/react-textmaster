@@ -1,12 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Navbar = (props) => {
+const Navbar = ({ title, mode, toggleMode, enabletext }) => {
     return (
-        <nav className={`navbar navbar-expand-lg navbar-${props.mode} bg-${props.mode}`}>
+        <nav className={`navbar navbar-expand-lg navbar-${mode} bg-${mode}`}>
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">{props.title}</Link>
-                <button className="navbar-toggler"type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <Link className="navbar-brand" to="/">{title}</Link>
+                <button 
+                    className="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarSupportedContent" 
+                    aria-controls="navbarSupportedContent" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation"
+                >
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -18,15 +26,23 @@ const Navbar = (props) => {
                             <Link className="nav-link" to="/dictionary">Dictionary</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/summury">SummarizeText</Link>
+                            <Link className="nav-link" to="/summary">Summarize Text</Link> {/* Corrected spelling */}
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/about">About</Link>
                         </li>
                     </ul>
-                    <div className={`form-check form-switch text-${props.mode === 'light' ? 'dark' : 'light'}`}>
-                        <input className="form-check-input" onClick={props.toggleMode} type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
-                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">{props.enabletext}</label>
+                    <div className={`form-check form-switch text-${mode === 'light' ? 'dark' : 'light'}`}>
+                        <input 
+                            className="form-check-input" 
+                            onClick={toggleMode} 
+                            type="checkbox" 
+                            role="switch" 
+                            id="flexSwitchCheckDefault" 
+                        />
+                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
+                            {enabletext}
+                        </label>
                     </div>
                 </div>
             </div>

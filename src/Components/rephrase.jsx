@@ -1,14 +1,13 @@
-// Rephrase.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Rephrase = ({ text, showAlert,mode}) => {
+const Rephrase = ({ text, showAlert, mode }) => {
     const [rephrasedText, setRephrasedText] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const handleRephrase = async () => {
         if (text.trim() === "") {
-            showAlert("Please enter a word to Rephrase", "warning");
+            showAlert("Please enter a word to rephrase", "warning");
             return;
         }
         setLoading(true);
@@ -16,8 +15,8 @@ const Rephrase = ({ text, showAlert,mode}) => {
             const response = await axios.post(
                 'https://api.sapling.ai/api/v1/paraphrase',
                 {
-                    key: '38Z4P9EL8QP2H3XIW212T15O6K1RI51T',
-                    text: text, // Pass the text prop for rephrasing
+                    key:'38Z4P9EL8QP2H3XIW212T15O6K1RI51T', // Use environment variable for API key
+                    text: text,
                 }
             );
 
@@ -38,21 +37,23 @@ const Rephrase = ({ text, showAlert,mode}) => {
 
     return (
         <div>
-            <button type="button" className="btn btn-primary my-1" onClick={handleRephrase} disabled={loading}>
+            <button 
+                type="button" 
+                className="btn btn-primary my-1" 
+                onClick={handleRephrase} 
+                disabled={loading}
+            >
                 {loading ? 'Rephrasing...' : 'Rephrase Text'}
             </button>
-            <div style={{ color: mode === 'dark' ? 'white' : '#041743'}}>
-                {
-                    rephrasedText.length > 0 && (
-                        <ul>
-                            {rephrasedText.map((item) => (
-                                <li key={item.hash}>{item.replacement}</li>
-                            ))}
-                        </ul>
-                    ) 
-                }
+            <div style={{ color: mode === 'dark' ? 'white' : '#041743' }}>
+                {rephrasedText.length > 0 && (
+                    <ul>
+                        {rephrasedText.map((item) => (
+                            <li key={item.hash}>{item.replacement}</li>
+                        ))}
+                    </ul>
+                )}
             </div>
-
         </div>
     );
 };

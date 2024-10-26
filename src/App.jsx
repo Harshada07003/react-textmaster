@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Container from './Components/Container';
 import Navbar from './Components/Navbar';
 import Alert from './Components/Alert';
@@ -35,18 +35,18 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <Navbar title="TextMaster" mode={mode} toggleMode={toggleMode} enabletext={enabletext} />
       <Alert alert={alert} />
       <div className="container my-3">
         <Routes>
           <Route path="/" element={<Container heading="Format your Text 📖🖋️" showAlert={showAlert} mode={mode} />} />
-          <Route path="/dictionary" element={<Dictionary  showAlert={showAlert} mode={mode}/>} />
-          <Route path="/summury" element={<Summarize  showAlert={showAlert} mode={mode}/>} />
-          <Route path="/about" element={<About mode={mode}/>} />
+          <Route path="/dictionary" element={<Dictionary showAlert={showAlert} mode={mode} />} />
+          <Route path="/summary" element={<Summarize showAlert={showAlert} mode={mode} />} />
+          <Route path="/about" element={<About mode={mode} />} />
         </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 
